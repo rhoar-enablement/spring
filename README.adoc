@@ -1,0 +1,34 @@
+= Red Hat OpenShift Application Runtimes - Spring Boot Training
+Thomas Qvarnstrom <tqvarnst@redhat.com>
+
+:sectnums!:
+:toc: left
+:revnumber: 1.0
+:revdate: 2017-07-20
+
+This repository is the used to develop training materials for Red Hat OpenShift Application Runtimes. This module/lab focuses on https://projects.spring.io/spring-boot/[Spring Boot]. The main authors of _{doctitle}_ is *{author}*, Red Hat and the current version ({revnumber}) was last updated on {revdate}.
+
+== Lab Overview
+
+[cols="1,4", options="header"]
+|===
+2+|  Details
+| Technology/Product | Red Hat OpenShift Application Runtimes, Spring Boot
+| Difficulty | 3
+| Time | 4 hours
+| Prerequisites | An understanding of Java application development and familiarity with OpenShift and Linux Containers
+|===
+
+
+== Introduction
+
+This is a lab, aimed at learning JavaEE developers Spring Boot and the most common frameworks, 
+
+The lab consists of several exercises walking the participant through basic on how to develop application using Spring Boot, especially as it relates to OpenShift and containerized microservices.
+
+Here is a short list for the available exercises:
+
+* link:lab1/docs/lab1-instructions.adoc[Exercise 1 - Getting Started with Spring Development]
+* link:lab2/docs/lab2-instructions.adoc[Exercise 2 - Using Spring Data and JPA]
+* link:lab3/docs/lab3-instructions.adoc[Exercise 3 - Spring MVC]
+* link:lab4/docs/lab4-instructions.adoc[Exercise 4 - How to use Spring Boot on RHOAR and OpenShift]
