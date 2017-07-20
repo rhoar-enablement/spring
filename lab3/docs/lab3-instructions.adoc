@@ -1,0 +1,45 @@
+:noaudio:
+:scrollbar:
+:data-uri:
+:toc2:
+
+== Lab X: Title
+
+In this lab, you will ...
+
+:numbered:
+
+== Step
+
+Instruction 
+
+[source, bash]
+    cd $HOME/rhoar-enablement/spring/labX
+
+More instructions followed by some code
+
+[source, java]
+    @GET
+    @Path("/{itemId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Inventory getAvailability(@PathParam("itemId") String itemId) {
+        return inventoryService.getInventory(itemId);
+    }
+
+NOTE: You can use notes
+
+WARNING: And warnings
+
+== Another Step
+
+Each lab in this course is housed in separate directories. Using the command line, find and observe
+the files for this lab:
+
+=== Subheading 
+
+Even more instructions
+
+
+
+
+
