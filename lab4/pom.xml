@@ -115,6 +115,7 @@
   </dependencies>
 
   <build>
+    <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -161,7 +162,6 @@
         </dependency>
       </dependencies>
       <build>
-      <finalName>product-catalog</finalName>
         <plugins>
           <plugin>
             <groupId>io.fabric8</groupId>
