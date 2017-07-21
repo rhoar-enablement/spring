@@ -19,9 +19,20 @@ Since this lab aims to teach you have to work with existing Spring application a
 
 == Initiate the project using Spring Initalizer
 
-Open a browser to http://start.spring.io and enter the following information
+1. Open a browser to http://start.spring.io and enter the following information
++
+image::images/spring-initilizer.png[Spring initilizer,150,150,role="right"]
++
+[options="header,footer,autowidth"]
+|=======
+|Attribute|Value
+|Group |com.redhat.coolstore
+|Artifact |product-catalog
+|Dependencies | _Leave Blank_
+|=======
 
-TODO 
+1. Click Generate project
+
 
 == Create your first Bean/Component
 
