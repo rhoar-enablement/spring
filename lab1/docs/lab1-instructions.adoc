@@ -3,41 +3,43 @@
 :data-uri:
 :toc2:
 
-== Lab X: Title
+= Lab 1: Getting Started with Spring and Spring Boot
 
-In this lab, you will ...
+In this lab, you will learn the basics of Spring development and how to get started with a Spring Boot project. 
+
+== Background
+
+In the past Spring has gotten a lot of criticism for beeing hard to get started with. This has however been addressed by the Spring community with the Spring Boot project and the Spring Initalizer service hosted at http://start.spring.io. However booth Spring Boot and Spring Initalizer takes an opinonated approach to which frameworks and 3rd party library to use. In a similar manner Red Hat provides a service at launch.opeenshift.io that will take an opinionated approach at which frameworks and target platfrom (OpenShift) you are developing for. 
+
+Since this lab aims to teach you have to work with existing Spring application and run it on RHOAR we are going to use the Spring Initalizer. Alternatively we could have used launch.openshift.io or JBoss Forge to initiate the project, however that would have shortcutted some of the steps that are important for your understanding of how to run Spring on RHOAR.
+
+= Steps
 
 :numbered:
 
-== Step
+== Initiate the project using Spring Initalizer
 
-Instruction 
+Open a browser to http://start.spring.io and enter the following information
 
-[source, bash]
-    cd $HOME/rhoar-enablement/spring/labX
+TODO 
 
-More instructions followed by some code
+== Create your first Bean/Component
 
-[source, java]
-    @GET
-    @Path("/{itemId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Inventory getAvailability(@PathParam("itemId") String itemId) {
-        return inventoryService.getInventory(itemId);
-    }
+TODO
 
-NOTE: You can use notes
+== Use environment specific application properties
 
-WARNING: And warnings
+TODO
 
-== Another Step
+== Use Autowire to test your Bean/Component
 
-Each lab in this course is housed in separate directories. Using the command line, find and observe
-the files for this lab:
+TODO
 
-=== Subheading 
+== Add a simple REST endpoint
 
-Even more instructions
+TODO
+
+== Summary
 
 
 
