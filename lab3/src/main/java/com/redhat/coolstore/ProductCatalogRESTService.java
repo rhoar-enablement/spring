@@ -25,19 +25,18 @@ public class ProductCatalogRESTService {
 	ProductRepository productRepo;
 	
 	@GET
-    public Response list() {
-//		return Response.ok(defaultProducts.split(","),MediaType.APPLICATION_JSON).build();
-        List<Product> products = catalog.findAll();
-        if(products==null || products.isEmpty()) {
-        	return Response.serverError().entity("Did not found any products").build();
-        }
-        return Response.ok(products,MediaType.APPLICATION_JSON).build();
-    }
+	public Response list() {
+		List<Product> products = catalog.findAll();
+		if(products==null || products.isEmpty()) {
+			return Response.serverError().entity("Did not found any products").build();
+		}
+		return Response.ok(products,MediaType.APPLICATION_JSON).build();
+	}
 	
 	@GET
 	@Path("/defaultlist")
-    public Response defaultList() {
+	public Response defaultList() {
 		return Response.ok(defaultProducts.split(","),MediaType.APPLICATION_JSON).build();
-    }
+	}
 	
 }

@@ -10,8 +10,8 @@ import javax.persistence.Id;
 public class Product {
 
 	@Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long itemId;
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long itemId;
 	
 	
 	private String name;
