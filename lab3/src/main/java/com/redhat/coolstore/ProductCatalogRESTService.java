@@ -20,10 +20,7 @@ public class ProductCatalogRESTService {
 	
 	@Autowired
 	ProductRepository catalog;
-	
-	@Autowired
-	ProductRepository productRepo;
-	
+
 	@GET
 	public Response list() {
 		List<Product> products = catalog.findAll();
