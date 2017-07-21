@@ -18,17 +18,6 @@ public class ProductCatalogRESTService {
 	@Value("${catalog.default.products}")
 	String defaultProducts;
 	
-	@Autowired
-	ProductRepository catalog;
-	
-	@GET
-	public Response list() {
-		List<Product> products = catalog.findAll();
-		if(products==null || products.isEmpty()) {
-			return Response.serverError().entity("Did not found any products").build();
-		}
-		return Response.ok(products,MediaType.APPLICATION_JSON).build();
-	}
 	
 	@GET
 	@Path("/defaultlist")
