@@ -20,8 +20,9 @@ Since this lab aims to teach you have to work with existing Spring application a
 == Initiate the project using Spring Initalizer
 
 1. Open a browser to http://start.spring.io and enter the following information
+
 +
-image::images/spring-initilizer.png[Spring initilizer,150,150,role="right"]
+Generate a **Maven project** with **Java** and Spring Boot **1.5.4**
 +
 [options="header,footer,autowidth"]
 |=======
@@ -30,23 +31,74 @@ image::images/spring-initilizer.png[Spring initilizer,150,150,role="right"]
 |Artifact |product-catalog
 |Dependencies | _Leave Blank_
 |=======
++
+image::images/spring-initilizer.png[Spring initilizer]
 
 1. Click Generate project
+1. Open a terminal and unzip the downloaded project
++
+[source,bash]
+----
+mkdir -p ~/rhoar-training/spring
+cd ~/rhoar-training/spring
+unzip ~/Downloads/product-catalog.zip 
+----
 
+1. Test to build the project  
++
+[source,bash]
+----
+cd product-catalog
+mvn clean package
+----
 
-== Create your first Bean/Component
+== Create your first Component
 
-TODO
+1. Create a Java class named `ProductCatalogService` in package `com.redhat.coolstore.productcatalog`
+
+2. Annotate the class with `@Component` from `import org.springframework.stereotype.Component`
+
+3. Add a **public** method called `getDefaultProductList` returning a `String[]` like this
++
+[source,java]
+---- 
+public String[] getDefaultProductList() {
+    return "Red Hat,Fedora, Cups".split(",");
+}
+----
+
+4. Inject the component into the `ProductCatalogApplicationTests`
++
+[source,java]
+---- 
+@Autowire
+ProductCatalogService service
+----
+
+5. Add a test method called `testDefaultProudctList`
++
+[source,java]
+---- 
+@Test
+public testDefaultProductList() {
+    String[] defaultList = service.getDefaultProductList();
+    assertTrue(defaultList.size()=3);
+    assertEqual(defaultList[1],"Fedora");
+}
+----
+
+6. Run the tests either in your IDE or from commandline like this
+
+[source,bash]
+----
+mvn verify
+----
 
 == Use environment specific application properties
 
 TODO
 
-== Use Autowire to test your Bean/Component
-
-TODO
-
-== Add a simple REST endpoint
+== Add REST capabilities using Apache CXF
 
 TODO
 
