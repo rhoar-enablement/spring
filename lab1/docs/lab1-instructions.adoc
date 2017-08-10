@@ -56,7 +56,7 @@ mvn clean package
 
 1. Create a Java class named `ProductCatalogService` in package `com.redhat.coolstore.productcatalog`
 
-1. Annotate the class with `@Component` from `import org.springframework.stereotype.Component`
+1. Annotate the class with `@Component` and the following import statement `import org.springframework.stereotype.Component`
 
 1. Add a **public** method called `sayHello` returning a `String` like this
 +
@@ -89,7 +89,7 @@ Note: Autowire annotation requires that you add `import org.springframework.bean
     }
 ----
 +
-Note: test methods requires that you add the following import statements `import static org.junit.Assert.assertEquals;` and `import static org.junit.Assert.assertTrue;`
+NOTE: This requires that you add the following import statements `import static org.junit.Assert.assertEquals;` and `import static org.junit.Assert.assertTrue;`
 
 1. Run the tests either in your IDE or from commandline like this
 +
@@ -122,13 +122,203 @@ mvn verify
 
 == Use environment specific application properties
 
-Components is a great way to implement business logic and sometimes we need to be able to change the behavious of our components using configuration. Spring provides a   
+1. Change the `ProductCatalogService` class and add the following class variable:
++
+[source,java]
+---- 
+    @Value("${coolstore.message:'Hello World!'}")
+    String message;
+----
++
+NOTE: The `@Value` annotations namespace is `org.springframework.beans.factory.annotation.Value`
+
+1. Update the `sayHello` class method of `ProductCatalogService` to return the `message` member variable
++
+[source,java]
+---- 
+    public String sayHello() {
+        return message;
+    }
+----
++
+
+1. Test the change
++
+[source,bash]
+----
+mvn verify
+----
+
+=== Add dev specific message
+Lets update the test class to use a profile called `dev` that should result in `Hey Developer!` as message
+
+1. Add annotation to `@ActiveProfiles("dev")` to the class `ProductCatalogApplicationTests`
+
+1. Change the `assertEquals` test string to `Hey Developer!`
+
+1. Run the test 
++
+[source,bash]
+----
+mvn verify
+----
++
+NOTE: This test should fail since we haven't updated the implementation yet.
+
+1. Add a new properties file called `src/main/resources/application-dev.properties` with the following content
+
+[source,properties]
+----
+coolstore.message=Hey Developer!
+----
+
+1. Run the test 
++
+[source,bash]
+----
+mvn verify
+----
++
+NOTE: This time the test should execute successful
 
 == Add REST capabilities using Apache CXF
 
-TODO
+At this stage our product catalog service can only say hello and it does not expose any external endpoints. In this section we will add REST support and provide a list of product names.
+
+1. Apache CXF is tested and verfied with version 1.4.1 of Spring Boot, change the `spring-boot-starter-paren` version in the `pom.xml` to `1.4.1.RELEASE`.
+
+1. Also in `pom.xml` add dependencies to Apache CXF as below:
++
+[source,xml]
+----
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
+			<version>3.1.10</version>
+		</dependency>
+----
+
+1. Open `ProductCatalogService` and add `@Path("/products")` as class annotation and add the following method
++
+[source,java]
+----
+    @GET
+	public Response list() {
+		return Response.ok(message,MediaType.APPLICATION_JSON).build();
+	}
+----
++
+NOTE: The `@Path` annotations namespace is `javax.ws.rs.Path`
++
+NOTE: The `@GET` annotations namespace is `javax.ws.rs.GET`
++
+NOTE: The `Response` class namespace is `javax.ws.rs.core.Response`
++
+NOTE: The `MediaType` class namespace is `javax.ws.rs.core.MediaType`
+
+1. Add the following configuration to `src/main/resources/application.properties`
++
+[source,properties]
+----
+cxf.path=/services
+cxf.jaxrs.component-scan=true
+cxf.jaxrs.classes-scan-packages=com.redhat.coolstore.productcatalog
+----
+
+1. Build and run the application
++
+[source,bash]
+----
+mvn spring-boot:run
+----
+
+1. Test the endpoint in another terminal using curl
++
+[source,bash]
+----
+curl http://localhost:8080/services/products
+----
++
+NOTE: The expected output should be `Hello World!`
+
+1. Go back to the original terminal and stop the application using `CTRL-C``
+
+1. Run the application, but this time activate the `dev` profile
++
+[source,bash]
+----
+mvn spring-boot:run -Dspring.profiles.active=dev
+---- 
+
+1. Test the endpoint in another terminal using curl
++
+[source,bash]
+----
+curl http://localhost:8080/services/products
+----
++
+NOTE: The expected output should be `Hey Developer!`
+
+1. Go back to the original terminal and stop the application using `CTRL-C`
+
+=== Add support Jackson JAX-RS binding
+Default Apache CXF relies on Jettison 1.3 as JSON provider, but one can also use Jackson provide. Which one to choose is a mater of taste, but Jettison supports only JAXB annotated beans. Since we want to avoid additional annotation or transformation object we are going to use Jackson Provider instead.
+
+1. Add Jackson dependency to the `pom.xml`
++
+[source,xml]
+----
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+		</dependency>
+----
+
+1. Create a configuration class called `ProductCatalogConfiguration` to configure the Jackson using a bean like this:
++
+[source,java]
+----
+package com.redhat.coolstore.productcatalog;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+
+@Configuration
+public class ProductCatalogConfiguration {
+	
+	@Bean
+	public JacksonJsonProvider jsonProvider(ObjectMapper objectMapper) {
+		JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
+		provider.setMapper(objectMapper);
+		return provider;
+    }
+    
+}
+----
+
+1. Build and run the application
++
+[source,bash]
+----
+mvn spring-boot:run
+----
+
+1. Test the endpoint in another terminal using curl
++
+[source,bash]
+----
+curl http://localhost:8080/services/products
+----
++
+NOTE: The expected output should be `Hello World!`
 
 = Summary
+In this lab you have learned how to create component and how to configure that component for different environments using the configuration api. Then you learned hot to expose the component as a REST service that can be called using standad http protocol. Finally you learned how to add Jackson Json  provider that we are going to be useful in future next labs.
+
 
 
 
