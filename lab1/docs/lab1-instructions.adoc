@@ -56,42 +56,65 @@ mvn clean package
 
 1. Create a Java class named `ProductCatalogService` in package `com.redhat.coolstore.productcatalog`
 
-2. Annotate the class with `@Component` from `import org.springframework.stereotype.Component`
+1. Annotate the class with `@Component` from `import org.springframework.stereotype.Component`
 
-3. Add a **public** method called `getDefaultProductList` returning a `String[]` like this
+1. Add a **public** method called `sayHello` returning a `String` like this
 +
 [source,java]
 ---- 
-    public String[] getDefaultProductList() {
-        return "Red Hat,Fedora, Cups".split(",");
+    public String sayHello() {
+        return "Hello World!";
     }
 ----
 
-4. Inject the component into the `ProductCatalogApplicationTests`
+1. Inject the component into the `ProductCatalogApplicationTests`
 +
 [source,java]
 ---- 
-@Autowire
-ProductCatalogService service
+    @Autowired
+    ProductCatalogService service
 ----
 +
 Note: Autowire annotation requires that you add `import org.springframework.beans.factory.annotation.Autowired;`
 
-5. Add a test method called `testDefaultProudctList`
+1. Add a test method called `testDefaultProudctList`
 +
 [source,java]
 ---- 
-    @Test
+	@Test
     public void testDefaultProductList() {
-        String[] defaultList = service.getDefaultProductList();
-        assertTrue(defaultList.length==3);
-        assertEquals(defaultList[1],"Fedora");
+        String message = service.sayHello();
+        assertTrue(message!=null);
+        assertEquals(message,"Hello World!");
     }
 ----
 +
 Note: test methods requires that you add the following import statements `import static org.junit.Assert.assertEquals;` and `import static org.junit.Assert.assertTrue;`
-6. Run the tests either in your IDE or from commandline like this
 
+1. Run the tests either in your IDE or from commandline like this
++
+[source,bash]
+----
+mvn verify
+----
+
+You can now inject a component with @Autowired annotation, similary to how CDI works in Java EE. If you are a Java EE developer you would probably prefer to use the JSR-330 standard annotation `@Inject` instead of `@Autowired` which is also supported by Spring. Let's change the test class to use @Inject instead.
+
+1. Add the following dependency to the `pom.xml` in the `<dependencies>` section.
++
+[source,xml]
+----
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+----
+
+1. Change `ProductCatalogApplicationTest` and replace the `@Autowired` with `@Inject` and `import org.springframework.beans.factory.annotation.Autowired;` with `import javax.inject.Inject;`
+
+1. Run the tests either in your IDE or from commandline again and verify that the `@Inject` works.
++
 [source,bash]
 ----
 mvn verify
@@ -99,7 +122,7 @@ mvn verify
 
 == Use environment specific application properties
 
-TODO
+Components is a great way to implement business logic and sometimes we need to be able to change the behavious of our components using configuration. Spring provides a   
 
 == Add REST capabilities using Apache CXF
 
