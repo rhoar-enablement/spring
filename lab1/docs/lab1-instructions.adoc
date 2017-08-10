@@ -62,9 +62,9 @@ mvn clean package
 +
 [source,java]
 ---- 
-public String[] getDefaultProductList() {
-    return "Red Hat,Fedora, Cups".split(",");
-}
+    public String[] getDefaultProductList() {
+        return "Red Hat,Fedora, Cups".split(",");
+    }
 ----
 
 4. Inject the component into the `ProductCatalogApplicationTests`
@@ -74,19 +74,22 @@ public String[] getDefaultProductList() {
 @Autowire
 ProductCatalogService service
 ----
++
+Note: Autowire annotation requires that you add `import org.springframework.beans.factory.annotation.Autowired;`
 
 5. Add a test method called `testDefaultProudctList`
 +
 [source,java]
 ---- 
-@Test
-public testDefaultProductList() {
-    String[] defaultList = service.getDefaultProductList();
-    assertTrue(defaultList.size()=3);
-    assertEqual(defaultList[1],"Fedora");
-}
+    @Test
+    public void testDefaultProductList() {
+        String[] defaultList = service.getDefaultProductList();
+        assertTrue(defaultList.length==3);
+        assertEquals(defaultList[1],"Fedora");
+    }
 ----
-
++
+Note: test methods requires that you add the following import statements `import static org.junit.Assert.assertEquals;` and `import static org.junit.Assert.assertTrue;`
 6. Run the tests either in your IDE or from commandline like this
 
 [source,bash]
