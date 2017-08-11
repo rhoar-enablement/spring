@@ -29,9 +29,9 @@ public class ProductCatalogJPATests {
 	}
 	
 	@Test
-	public void testFindOne() {
-		Product product = catalog.findOne(444435L);
-		assertTrue("Oculus Rift".equals(product.getName()));
+	public void testFindByName() {
+		Product product = catalog.findByName("Oculus Rift");
+		assertTrue(444435L==product.getItemId());
 	}
 	
 	

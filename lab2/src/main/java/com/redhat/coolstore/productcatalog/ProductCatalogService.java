@@ -15,16 +15,16 @@ import org.springframework.stereotype.Component;
 @Path("/products")
 public class ProductCatalogService {
 
-    @Value("${coolstore.message:Hello World!}")
-    String message;
+	@Value("${coolstore.message:Hello World!}")
+	String message;
 
-    @Inject
+	@Inject
 	ProductRepository catalog;
-    public String sayHello() {
-        return message;
-    }
+	public String sayHello() {
+		return message;
+	}
 
-    @GET
+	@GET
 	public Response list() {
 		List<Product> products = catalog.findAll();
 		if(products==null || products.isEmpty()) {
