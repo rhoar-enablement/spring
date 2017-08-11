@@ -1,38 +1,36 @@
-package com.redhat.coolstore;
+package com.redhat.coolstore.productcatalog;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("dev")
 @DataJpaTest
-public class ProductCatalogApplicationDevTests {
-	
-    @Autowired
-    private ProductRepository products;
+public class ProductCatalogJPATests {
+
+	@Inject
+    ProductRepository catalog;
+
 	
 	@Test
 	public void testFindAll() {
-		List<Product> productList = products.findAll();
+		List<Product> productList = catalog.findAll();
 		assertEquals(productList.size(), 8);
 	}
 	
 	@Test
 	public void testFindOne() {
-		Product product = products.findOne(444435L);
+		Product product = catalog.findOne(444435L);
 		assertTrue("Oculus Rift".equals(product.getName()));
 	}
 	
@@ -45,16 +43,14 @@ public class ProductCatalogApplicationDevTests {
 		newProduct.setDescription("This is a description");
 		newProduct.setPrice(10.00d);
 		
-		Product product = products.save(newProduct);
+		Product product = catalog.save(newProduct);
 		long id = product.getItemId();
 		
-		assertNotNull(products.findOne(id));
+		assertNotNull(catalog.findOne(id));
 		
-		products.delete(product);
+		catalog.delete(product);
 		
-		assertNull(products.findOne(id));
+		assertNull(catalog.findOne(id));
 	}
-	
-	
 
 }
