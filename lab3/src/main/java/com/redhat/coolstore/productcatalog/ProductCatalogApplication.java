@@ -1,4 +1,4 @@
-package com.redhat.coolstore;
+package com.redhat.coolstore.productcatalog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,7 +6,8 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
 public class ProductCatalogApplication extends SpringBootServletInitializer {
+
 	public static void main(String[] args) {
-		SpringApplication.run(ProductCatalogApplication.class, args);	
+		SpringApplication.run(ProductCatalogApplication.class, args);
 	}
 }
