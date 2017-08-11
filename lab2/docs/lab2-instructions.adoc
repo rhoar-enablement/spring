@@ -292,7 +292,7 @@ mvn verify
 mvn verify
 ----
 
-== Change the service to use the ProductRepostiroy and return the product list via the REST endpoint
+== Change the REST service to use the ProductRepository and return the product list
 
 1. Open `ProductCatalogService` and inject the `ProductRepositry` as a class variable
 +
