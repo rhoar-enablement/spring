@@ -3,41 +3,338 @@
 :data-uri:
 :toc2:
 
-== Lab X: Title
+== Lab 2: Spring Data and JPA
 
-In this lab, you will ...
+In this lab, you will learn how to use Spring Data together with JPA to retrive and persist data to a datastore
 
 :numbered:
 
-== Step
-
-Instruction 
+== Reset the environment
+It's recommended, but not required to reset the development environment. To reset the environment run the following commands
 
 [source, bash]
-    cd $HOME/rhoar-enablement/spring/labX
+----
+curl -Lo ~/Downloads/rhoar-spring-master.zip https://github.com/rhoar-enablement/spring/archive/master.zip
+cd $HOME/rhoar-training/
+unzip ~/Downloads/rhoar-spring-master.zip
+cd spring
+mv product-catalog lab1
+cp -R ../spring-master/lab2 product-catalog
+----
 
-More instructions followed by some code
+Reload the IDE to reflect the changes
 
-[source, java]
-    @GET
-    @Path("/{itemId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Inventory getAvailability(@PathParam("itemId") String itemId) {
-        return inventoryService.getInventory(itemId);
-    }
+== Bootstrap JPA and H2 database for testing
 
-NOTE: You can use notes
+1. Add Spring Data JPA starter and h2 database dependencies to `pom.xml`
++
+[source, xml]
+----
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
 
-WARNING: And warnings
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+----
 
-== Another Step
+1. Add the follwing configuration to `application.properties`
++
+[source, properties]
+----
+# H2 Database settings
+spring.datasource.url=jdbc:h2:mem:products;DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.username=sa
+spring.datasource.password=
+spring.datasource.driver-class-name=org.h2.Driver
+----
 
-Each lab in this course is housed in separate directories. Using the command line, find and observe
-the files for this lab:
+1. Create a JPA Test class named `src/test/java/com/redhat/coolstore/productcatalog/ProductCatalogJPATests.java` with the following content:
++
+[source,java]
+----
+package com.redhat.coolstore.productcatalog;
 
-=== Subheading 
+import static org.junit.Assert.*;
 
-Even more instructions
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@DataJpaTest
+public class ProductCatalogJPATests {
+	@Test
+	public void testFindAll() {
+		assertTrue(true);
+	}
+}
+----
++
+NOTE: The test it self is currently meaning less, however the `@DataJpaTest` will bootstrap the JPA environment so if the test runs successfully we know that our JPA environment is working.
+
+1. Test that JPA bootstraps successfully.
++
+[source,bash]
+----
+mvn verify
+----
+
+== Add a product entity and some test data.
+
+1. Add a new class called `Product` in package `com.redhat.coolstore.productcatalog` that looks like this
++
+[source,java]
+----
+package com.redhat.coolstore.productcatalog;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Product {
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long itemId;
+	
+	private String name;
+	
+	@Column(length=2000)
+	private String description;
+	private double price;
+	
+	public Product() {}
+
+	public Long getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(Long itemId) {
+		this.itemId = itemId;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public double getPrice() {
+	return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	} 
+}
+----
+
+1. Add a new file `src/main/resources/import.sql` with the following contents
++
+[source,sql]
+----
+insert into PRODUCT (item_id, name, description, price) values (329299, 'Red Fedora', 'Official Red Hat Fedora', 34.99);
+insert into PRODUCT (item_id, name, description, price) values (329199, 'Forge Laptop Sticker', 'JBoss Community Forge Project Sticker', 8.50);
+insert into PRODUCT (item_id, name, description, price) values (165613, 'Solid Performance Polo', 'Moisture-wicking, antimicrobial 100% polyester design wicks for life of garment. No-curl, rib-knit collar; special collar band maintains crisp fold; three-button placket with dyed-to-match buttons; hemmed sleeves; even bottom with side vents; Import. Embroidery. Red Pepper.',17.80);
+insert into PRODUCT (item_id, name, description, price) values (165614, 'Ogio Caliber Polo', 'Moisture-wicking 100% polyester. Rib-knit collar and cuffs; Ogio jacquard tape inside neck; bar-tacked three-button placket with Ogio dyed-to-match buttons; side vents; tagless; Ogio badge on left sleeve. Import. Embroidery. Black.', 28.75);
+insert into PRODUCT (item_id, name, description, price) values (165954, '16 oz. Vortex Tumbler', 'Double-wall insulated, BPA-free, acrylic cup. Push-on lid with thumb-slide closure; for hot and cold beverages. Holds 16 oz. Hand wash only. Imprint. Clear.', 6.00);
+insert into PRODUCT (item_id, name, description, price) values (444434, 'Pebble Smart Watch', 'Smart glasses and smart watches are perhaps two of the most exciting developments in recent years.', 24.00);
+insert into PRODUCT (item_id, name, description, price) values (444435, 'Oculus Rift', 'The world of gaming has also undergone some very unique and compelling tech advances in recent years. Virtual reality, the concept of complete immersion into a digital universe through a special headset, has been the white whale of gaming and digital technology ever since Geekstakes Oculus Rift GiveawayNintendo marketed its Virtual Boy gaming system in 1995.Lytro',106.00 );
+insert into PRODUCT (item_id, name, description, price) values (444436, 'Lytro Camera', 'Consumers who want to up their photography game are looking at newfangled cameras like the Lytro Field camera, designed to take photos with infinite focus, so you can decide later exactly where you want the focus of each image to be.', 44.30);
+---- 
+
+1. Run the test and verify in the console output that a product entity are created and data is loaded.
++
+[source,bash]
+----
+mvn verify
+----
++
+[NOTE]
+====
+To verify that the product table is created look for console output that looks like this: 
+[source,bash]
+----
+Hibernate: drop table product if exists
+Hibernate: create table product (item_id...
+----
+
+To verify that the data was loaded look for console output like this:
+[source,bash]
+----
+org.hibernate.tool.hbm2ddl.SchemaExport  : HHH000476: Executing import script '/import.sql'
+org.hibernate.tool.hbm2ddl.SchemaExport  : HHH000230: Schema export complete
+----
+====
+
+== Create a DB Repository Interface and implement `testFindAll`
+
+1. Create a inteface called `ProductRepository` in package `com.redhat.coolstore.productcatalog` that looks like this
++
+[source,java]
+----
+package com.redhat.coolstore.productcatalog;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductRepository extends JpaRepository<Product, Long>{
+
+}
+----
+
+1. Open `ProductCatalogJPATests` inject the `ProductRepository` as a class variable
++
+[source,java]
+----
+	@Inject
+	ProductRepository catalog;
+----
++
+NOTE: You will also have to add an import statement for `javax.inject.Inject`.
+
+1. Also in the `ProductCatalogJPATests` class and change the `testFindAll` method to look like this
++
+[source,java]
+----
+	@Test
+	public void testFindAll() {
+		List<Product> productList = catalog.findAll();
+		assertEquals(productList.size(), 8);
+	}
+----
++
+NOTE: You will also have to add an import statement for `java.util.List`.
+
+1. Run the test and verify that we get 8 entries back
++
+[source,bash]
+----
+mvn verify
+----
+
+== Add a custom `findByName` method to the ProductRepository that will return product by name
+
+1. Open `ProductRepository` class and add the following method interface
++
+[source,java]
+----
+	public Product findByName(String name);
+----
+
+1. Open `ProductCatalogJPATests.java` and add the follwoing test
++
+[source,java]
+----
+	@Test
+	public void testFindByName() {
+		Product product = catalog.findByName("Oculus Rift");
+		assertTrue(444435L==product.getItemId());
+	}
+----
+
+1. Test and verify
++
+[source,bash]
+----
+mvn verify
+----
+
+== Add a test case that creates and deletes an entry
+
+1. Open `ProductCatalogJPATests.java` and add the following test
++
+[source,java]
+----
+	@Test
+	public void testSaveAndDeleteProduct() {
+		
+		Product newProduct = new Product();
+		newProduct.setName("Test Prod");
+		newProduct.setDescription("This is a description");
+		newProduct.setPrice(10.00d);
+		
+		Product product = catalog.save(newProduct);
+		long id = product.getItemId();
+		
+		assertNotNull(catalog.findOne(id));
+		
+		catalog.delete(product);
+		
+		assertNull(catalog.findOne(id));
+	}
+----
+
+1. Test and verify
++
+[source,bash]
+----
+mvn verify
+----
+
+== Change the service to use the ProductRepostiroy and return the product list via the REST endpoint
+
+1. Open `ProductCatalogService` and inject the `ProductRepositry` as a class variable
++
+[source,java]
+----
+	@Inject
+	ProductRepository catalog;
+----
+
+1. Change the method `list` to return the outcome of `catalog.findAll()`
++
+[source,java]
+----
+	@GET
+	public Response list() {
+		List<Product> products = catalog.findAll();
+		if(products==null || products.isEmpty()) {
+			return Response.serverError().entity("Did not found any products").build();
+		}
+		return Response.ok(products,MediaType.APPLICATION_JSON).build();
+	}
+----
+
+1. Start the APPLICATION_JSON
++
+[source,bash]
+----
+mvn spring-boot:run 
+----
+
+1. In another terminal run curl to test the endpoint
++
+[source,bash]
+----
+curl http://localhost:8080/services/products
+----
++
+NOTE: The curl command should return a JSON string with the products in the database.
+
+== Summary
+
+In this lab you have learned how to use JPA togther with Spring Data to extend the REST service to return data from a database.
 
 
 
