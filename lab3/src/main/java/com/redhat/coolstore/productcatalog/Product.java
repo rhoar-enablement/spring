@@ -1,4 +1,4 @@
-package com.redhat.coolstore;
+package com.redhat.coolstore.productcatalog;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +20,7 @@ public class Product {
 	private String description;
 	private double price;
 	
-	protected Product() {}
+	public Product() {}
 
 	public Long getItemId() {
 		return itemId;
