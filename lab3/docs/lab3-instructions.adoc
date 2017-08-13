@@ -332,3 +332,5 @@ You need to add:
 
 1. Build and verify that you can add, edit and delete products. 
 
+= Summary
+You have now learned how to build basic web applications using Spring MVC. Using Spring MVC is rather simple, but there are tons of more advanced examples showing how to secure the such and application with Spring Security etc.
