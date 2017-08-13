@@ -23,10 +23,10 @@ public class ProductCatalogApplicationTests {
 	}
 
 	@Test
-    public void testDefaultProductList() {
-        String message = service.sayHello();
-        assertTrue(message!=null);
-        assertEquals(message,"Hey Developer!");
-    }
+	public void testDefaultProductList() {
+		String message = service.sayHello();
+		assertTrue(message!=null);
+		assertEquals(message,"Hey Developer!");
+	}
 
 }
