@@ -17,7 +17,6 @@
 				<thead>
 					<tr>
 						<th></th>
-						<th></th>
 						<th>Id</th>
 						<th>Name</th>
 						<th>Price</th>
@@ -29,8 +28,6 @@
 					<tr>
 						<td>
 							<a href="/admin/product/${product.itemId}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-						</td>
-						<td>
 							<a href="/admin/product/delete/${product.itemId}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
 						</td>
 						<td><c:out value="${product.itemId}"/></td>
