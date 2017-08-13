@@ -3,43 +3,332 @@
 :data-uri:
 :toc2:
 
-== Lab X: Title
+== Lab 3: Spring MVC
 
-In this lab, you will ...
+In this lab, you will how to use Spring MVC to develop a web application. You will create a administration web interface to the product-catalog to create, read (list), update and delete products from the datastore.
 
+:hide-uri-scheme:
 :numbered:
 
-== Step
-
-Instruction 
+== Add dependencies to pom.xml 
+In order to add support for tomcat in our application all we have todo is to add the following dependencies
 
 [source, bash]
-    cd $HOME/rhoar-enablement/spring/labX
+----
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId> <1>
+		</dependency>
 
-More instructions followed by some code
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>  <2>
+			<scope>provided</scope> <4>
+		</dependency>
 
-[source, java]
-    @GET
-    @Path("/{itemId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Inventory getAvailability(@PathParam("itemId") String itemId) {
-        return inventoryService.getInventory(itemId);
-    }
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId> <3>
+			<scope>provided</scope> <4>
+		</dependency>
+----
+<1> Spring-boot-start-web bootstraps the servlet environment, which defaults uses Tomcat
+<2> Since we are going to use Java Server Pages so we need to add a dependency to jasper so that we can compile JSP's
+<3> We are also going to use JSP Standard Tag Library (JSTL) so we need add a depenedencies for that.
+<4> Both jasper and JSTL is only required during the packaging and not for runtime.
 
-NOTE: You can use notes
-
-WARNING: And warnings
-
-== Another Step
-
-Each lab in this course is housed in separate directories. Using the command line, find and observe
-the files for this lab:
-
-=== Subheading 
-
-Even more instructions
-
+== Configure Tomcat to to use JSP views
+1. Add the following to the `application.properties`
+[source,java]
+----
+#Tomcat settings
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+----
 
 
+== Create a Controller for Admin Pages
+MVC constrollers are responsible for mapping incoming request to views and conneting that view with a model. In Spring
 
+1. Creata a class called `ProductCatalogAdminController` in package `com.redhat.coolstore.productcatalog`
+
+1. Annotate the class with `@Controller`
++
+NOTE: you need to add `import org.springframework.stereotype.Controller`
+
+1. Add a method called `showProductList` like this:
++
+[source,java]
+----
+	@RequestMapping(value="/admin/productlist",method=GET)
+	public String showProductList() {
+		return "productList";
+	}
+----
++
+[NOTE] 
+====
+You need to add:
+
+1. `import org.springframework.web.bind.annotation.RequestMapping;`
+1. `import static org.springframework.web.bind.annotation.RequestMethod.GET;`
+====
+
+== Create a Mockup page for product list
+
+1. Create a the following directorires `src/main/resources/META-INF/resources/WEB-INF/jsp/`
++
+NOTE: Placing the JSP pages under WEB-INF directory is a trick to not allow direct access to the JSP page without using a Controller
+
+1. Add a file called `productList.jsp` under `src/main/resources/META-INF/resources/WEB-INF/jsp/` with the following content:
++
+[source,html]
+----
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%@ page session="false" %>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<title>Product Catalog Admin</title>
+	</head>
+	<body>
+		<div class="container">
+			<div class="page-header">
+				<h1>Admin - Product List</h1>
+			</div>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th></th>
+						<th></th>
+						<th>Id</th>
+						<th>Name</th>
+						<th>Price</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+						</td>
+						<td>
+							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+						</td>
+						<td>0001</td>
+						<td>Mock Proudct</td>
+						<td>$10.0</td>
+						<td>Description of mock product</td>
+					</tr>
+				</tbody>
+			</table>
+			<a href="/admin/product/add" class="btn btn-default btn-lg">
+				<span class="glyphicon glyphicon-plus"></span> Add 
+			</a>	  	
+		</div>
+	</body>
+</html>
+----
+
+1. Test the mockup page starting Spring boot
+[source,bash]
+----
+mvn spring-boot:run
+----
+
+1. Open a web browser and open http://localhost:8080/admin/proudctlist verify that the mockup page renders correctly
+
+
+== Add the model to the view and add JSTL for a dynamic list
+
+1. Open the class called `ProductCatalogAdminController` in package `com.redhat.coolstore.productcatalog` and inject the `ProductRepository` as a class variable.
++
+[source,java]
+----
+	@Inject
+	ProductRepository repository;
+----
+
+1. Change the `showProductList` to this:
++
+[source,java]
+----
+	@RequestMapping(value="/admin/productlist",method=GET)
+	public String showProductList(Model model) {
+		model.addAttribute("prodList", repository.findAll());
+		return "productList";
+	}
+----
++
+NOTE: You need to add `import org.springframework.ui.Model;`
+
+1. Open the `productList.jsp` and change the `<tbody>...</tbody>` to this 
++
+[source]
+----
+<tbody>
+	<c:forEach items="${prodList}" var="product" varStatus="loop">
+	<tr>
+		<td>
+			<a href="/admin/product/${product.itemId}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+		</td>
+		<td>
+			<a href="/admin/product/delete/${product.itemId}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+		</td>
+		<td><c:out value="${product.itemId}"/></td>
+		<td><c:out value="${product.name}"/></td>
+		<td>$<c:out value="${product.price}"/></td>
+		<td><c:out value="${product.description}"/></td>
+	</tr>
+	</c:forEach>
+</tbody>
+----
+
+1. Build and test the list
+[source,bash]
+----
+mvn spring-boot:run
+----
+
+1. Open a web browser and open http://localhost:8080/admin/proudctlist verify that the prodcut list page show our products form the database
+
+
+== Implement a delete method
+
+1. Open the class called `ProductCatalogAdminController` and add a method called `deleteProduct` like this:
++
+[source,java]
+----
+	@RequestMapping(value="/admin/product/delete/{itemId}",method=GET)
+	public String deleteProduct(@PathVariable("itemId") long itemId) {
+		repository.delete(itemId);
+		return "redirect:/admin/productlist";
+	}
+----
++
+NOTE: you need to add `import org.springframework.web.bind.annotation.PathVariable;`
+
+1. Open the `productList.jsp` and add a the href for trash glyphicon with address  `<a href="/admin/product/delete/${product.itemId}">`
+
+
+1. Build and test the list
+[source,bash]
+----
+mvn spring-boot:run
+----
+
+1. Open a web browser and open http://localhost:8080/admin/proudctlist and test to delete a product.
++
+NOTE: Don't worrie about deleting products. A simple restart will restore the database.
+
+
+
+
+== Implement a Add and edit page.
+
+1. Add a JSP form page called `productForm.jsp` under `src/main/resources/META-INF/resources/WEB-INF/jsp/` with the following content:
++
+[source,html]
+----
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
+<%@ page session="false" %>
+<html>
+	<head>
+		<title>Product Catalog Form</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="page-header">
+				<h1>Admin Product Form</h1>
+			</div>
+			<sf:form method="POST" modelAttribute="product" >
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Attribute</th>
+						<th>Value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Id:</td>
+						<td><sf:input path="itemId" size="40" cssClass="form-control" readonly="true"/></td>
+					</tr>
+					<tr>
+						<td>Name:</td>	
+						<td><sf:input path="name" size="40" cssClass="form-control"/></td>
+					</tr>
+					<tr>
+						<td>Price</td>
+						<td>
+							<div class="input-group">
+								<span class="input-group-addon">$</span>
+								<sf:input path="price" cssClass="form-control"/>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>Description</td>
+						<td><sf:textarea cols="80" rows="5" path="description" cssClass="form-control"/></td>
+					</tr>
+				</tbody>
+			</table>
+			<input type="submit" value="Save" class="btn btn-default btn-lg"/>
+			<input type="button" value="Cancel" class="btn btn-default btn-lg" onClick="window.location='/admin/productlist';"/>
+			</sf:form>	
+		</div>
+	</body>
+</html>
+----
+
+1. Open the class called `ProductCatalogAdminController` and add a method called `showProductForm` like this:
++
+[source,java]
+----
+@RequestMapping(value="/admin/product/add",method=GET)
+public String showProductForm(Model model) {
+	model.addAttribute("product",new Product());
+	return "productForm";
+}
+----
+
+1. add a method called `showProductForm` like this:
++
+[source,java]
+----
+@RequestMapping(value="/admin/product/{itemId}",method=GET)
+public String showProductForm(@PathVariable("itemId") long itemId, Model model) {
+	model.addAttribute("product",repository.findOne(itemId));
+	return "productForm";
+}
+----
+
+1. add a method called `processProductForm` like this:
++
+[source,java]
+----
+@RequestMapping(value="/admin/product/*",method=POST)
+public String processProductForm(@ModelAttribute("product") Product product) {
+	repository.save(product);
+	return "redirect:/admin/productlist";
+
+}
+----
++
+[NOTE] 
+====
+You need to add:
+
+1. `import org.springframework.web.bind.annotation.ModelAttribute;`
+1. `import static org.springframework.web.bind.annotation.RequestMethod.POST;`
+====
+
+1. Build and verify that you can add, edit and delete products. 
 
