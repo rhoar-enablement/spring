@@ -60,10 +60,10 @@ NOTE: you need to add `import org.springframework.stereotype.Controller`
 +
 [source,java]
 ----
-	@RequestMapping(value="/admin/productlist",method=GET)
-	public String showProductList() {
-		return "productList";
-	}
+@RequestMapping(value="/admin/productlist",method=GET)
+public String showProductList() {
+	return "productList";
+}
 ----
 +
 [NOTE] 
