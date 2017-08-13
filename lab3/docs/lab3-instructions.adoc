@@ -211,7 +211,7 @@ mvn spring-boot:run
 +
 NOTE: you need to add `import org.springframework.web.bind.annotation.PathVariable;`
 
-1. Open the `productList.jsp` and add a the href for trash glyphicon with address  `<a href="/admin/product/delete/${product.itemId}">`
+1. Open the `productList.jsp` and add a link for the trash glyphicon with address `/admin/product/delete/${product.itemId}`
 
 
 1. Build and test the list
@@ -330,7 +330,12 @@ You need to add:
 1. `import static org.springframework.web.bind.annotation.RequestMethod.POST;`
 ====
 
+1. Open the `productList.jsp` and add a link for the edit glyphicon with address `/admin/product/${product.itemId}`
+
+
 1. Build and verify that you can add, edit and delete products. 
+
+
 
 = Summary
 You have now learned how to build basic web applications using Spring MVC. Using Spring MVC is rather simple, but there are tons of more advanced examples showing how to secure the such and application with Spring Security etc.
