@@ -15,22 +15,22 @@ In order to add support for tomcat in our application all we have todo is to add
 
 [source, bash]
 ----
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId> <1>
-		</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId> <1>
+</dependency>
 
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>  <2>
-			<scope>provided</scope> <4>
-		</dependency>
+<dependency>
+	<groupId>org.apache.tomcat.embed</groupId>
+	<artifactId>tomcat-embed-jasper</artifactId>  <2>
+	<scope>provided</scope> <4>
+</dependency>
 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId> <3>
-			<scope>provided</scope> <4>
-		</dependency>
+<dependency>
+	<groupId>javax.servlet</groupId>
+	<artifactId>jstl</artifactId> <3>
+	<scope>provided</scope> <4>
+</dependency>
 ----
 <1> Spring-boot-start-web bootstraps the servlet environment, which defaults uses Tomcat
 <2> Since we are going to use Java Server Pages so we need to add a dependency to jasper so that we can compile JSP's
@@ -148,19 +148,19 @@ mvn spring-boot:run
 +
 [source,java]
 ----
-	@Inject
-	ProductRepository repository;
+@Inject
+ProductRepository repository;
 ----
 
 1. Change the `showProductList` to this:
 +
 [source,java]
 ----
-	@RequestMapping(value="/admin/productlist",method=GET)
-	public String showProductList(Model model) {
-		model.addAttribute("prodList", repository.findAll());
-		return "productList";
-	}
+@RequestMapping(value="/admin/productlist",method=GET)
+public String showProductList(Model model) {
+	model.addAttribute("prodList", repository.findAll());
+	return "productList";
+}
 ----
 +
 NOTE: You need to add `import org.springframework.ui.Model;`
@@ -202,11 +202,11 @@ mvn spring-boot:run
 +
 [source,java]
 ----
-	@RequestMapping(value="/admin/product/delete/{itemId}",method=GET)
-	public String deleteProduct(@PathVariable("itemId") long itemId) {
-		repository.delete(itemId);
-		return "redirect:/admin/productlist";
-	}
+@RequestMapping(value="/admin/product/delete/{itemId}",method=GET)
+public String deleteProduct(@PathVariable("itemId") long itemId) {
+	repository.delete(itemId);
+	return "redirect:/admin/productlist";
+}
 ----
 +
 NOTE: you need to add `import org.springframework.web.bind.annotation.PathVariable;`
