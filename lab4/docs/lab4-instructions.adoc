@@ -3,43 +3,188 @@
 :data-uri:
 :toc2:
 
-== Lab X: Title
+== Lab 4 - Deploying on OpenShift Application Runtimes
 
-In this lab, you will ...
+In this lab, you will learn how to take a spring application and enable it to run on RHOAR.
+
+Spring Boot project from http://spring.start.io uses a parent project called `spring-boot-starter-parent`. This is where all the maven magic regarding versions etc are happinng. Similary you will find that project from http://launch.openshift.io has a parent project. However the later also has a dependencyManagement in the actual project.
+
+In this lab we will walk you through how to take a customers Spring Boot project and convert it into RHOAR.
 
 :numbered:
 
-== Step
+== Fixing project setup
 
-Instruction 
+1. Replace the `spring-boot-starter-parent` with RHOAR `booster-parent`
++
+Replace
++
+[source, xml]
+----
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.4.1.RELEASE</version>
+    <relativePath />
+</parent>
+----
++
+With
++
+[source, xml]
+----
+<parent>
+    <groupId>io.openshift</groupId>
+    <artifactId>booster-parent</artifactId>
+    <version>6</version>
+</parent>
+----
 
-[source, bash]
-    cd $HOME/rhoar-enablement/spring/labX
+1. Add properties for spring-boot-bom version, postgres version and mvn spring-booy plugin version
++
+In the `<properties>` section add:
++
+    <spring-boot.bom.version>1</spring-boot.bom.version>
+    <postgresql.version>9.4.1212</postgresql.version>
+    <maven.spring-boot.plugin.version>1.4.1.RELEASE</maven.spring-boot.plugin.version>
 
-More instructions followed by some code
+1. Add a `<dependencyManagement>` after the `<properties>` section:
++
+[source, xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.snowdrop</groupId>
+            <artifactId>spring-boot-1.4-bom</artifactId>
+            <version>${spring-boot.bom.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
 
-[source, java]
-    @GET
-    @Path("/{itemId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Inventory getAvailability(@PathParam("itemId") String itemId) {
-        return inventoryService.getInventory(itemId);
-    }
+1. Add version to the `spring-boot-maven-plugin`.
++
+In the `<build><plugins><plugin>` section add 
 
-NOTE: You can use notes
+1. Build and verify
++
+    mvn clean verify
 
-WARNING: And warnings
+== Adding support for postgresql
+When we depoy this OpenShift we probably want to use a database instance and not a local H2 instance. To do this we need to introduce different profile for OpenShift vs local
 
-== Another Step
+1. Remove the h2 dependency
 
-Each lab in this course is housed in separate directories. Using the command line, find and observe
-the files for this lab:
+1. Add profiles like this
++
+[source, xml]
+----
+<profiles>
+    <profile>
+        <id>local</id>
+        <activation>
+        <activeByDefault>true</activeByDefault>
+        </activation>
+        <dependencies>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        </dependencies>
+    </profile>
+    <profile>
+        <id>openshift</id>
+        <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        </dependencies>
+        <build>
+        <plugins>
+            <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>fabric8-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                <id>fmp</id>
+                <phase>package</phase>
+                <goals>
+                    <goal>resource</goal>
+                    <goal>build</goal>
+                </goals>
+                </execution>
+            </executions>
+            </plugin>
+        </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>openshift-it</id>
+        <build>
+        <plugins>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+                <execution>
+                <goals>
+                    <goal>integration-test</goal>
+                    <goal>verify</goal>
+                </goals>
+                </execution>
+            </executions>
+            </plugin>
+        </plugins>
+        </build>
+    </profile>
+</profiles>
+----
 
-=== Subheading 
+1. Change the default build to use the local profile
 
-Even more instructions
+[source,xml]
+----
+<build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+        <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${maven.spring-boot.plugin.version}</version>
+        <configuration>
+            <profiles>
+            <profile>local</profile>
+            </profiles>
+        </configuration>
+        </plugin>
+    </plugins>
+</build>
+----
+
+1. Build and verify
++
+    mvn clean verify
 
 
+== Deploy to OpenShift
 
+1. Login to the remote OpenShift environment (See instructions from Chad)
 
+1. Create a new project with a unique name
++
+    oc new-project product-catalog-<unique numer>
 
+1. Create a Postgres database
++
+    oc new-app -e POSTGRESQL_USER=luke -ePOSTGRESQL_PASSWORD=secret -ePOSTGRESQL_DATABASE=my_data openshift/postgresql-92-centos7 --name=my-database
+
+1. Build and deploy your project
++
+    mvn clean fabric8:deploy -Popenshift
