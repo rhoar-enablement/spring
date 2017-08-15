@@ -68,6 +68,8 @@ In the `<properties>` section add:
 1. Add version to the `spring-boot-maven-plugin`.
 +
 In the `<build><plugins><plugin>` section add 
++
+    <version>${maven.spring-boot.plugin.version}</version>
 
 1. Build and verify
 +
