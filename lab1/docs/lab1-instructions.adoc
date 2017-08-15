@@ -126,7 +126,7 @@ mvn verify
 +
 [source,java]
 ---- 
-    @Value("${coolstore.message:'Hello World!'}")
+    @Value("${coolstore.message:Hello World!}")
     String message;
 ----
 +
