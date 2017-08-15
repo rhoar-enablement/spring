@@ -193,7 +193,7 @@ NOTE: You need to add `import org.springframework.ui.Model;`
 mvn spring-boot:run
 ----
 
-1. Open a web browser and open http://localhost:8080/admin/proudctlist verify that the prodcut list page show our products form the database
+1. Open a web browser and open http://localhost:8080/admin/productlist verify that the prodcut list page show our products form the database
 
 
 == Implement a delete method
