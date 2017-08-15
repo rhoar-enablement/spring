@@ -1,4 +1,4 @@
-package com.redhat.coolstore;
+package com.redhat.coolstore.productcatalog;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
