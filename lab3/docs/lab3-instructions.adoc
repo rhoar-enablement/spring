@@ -211,9 +211,6 @@ public String deleteProduct(@PathVariable("itemId") long itemId) {
 +
 NOTE: you need to add `import org.springframework.web.bind.annotation.PathVariable;`
 
-1. Open the `productList.jsp` and add a link for the trash glyphicon with address `/admin/product/delete/${product.itemId}`
-
-
 1. Build and test the list
 [source,bash]
 ----
