@@ -1,4 +1,4 @@
-package com.redhat.coolstore;
+package com.redhat.coolstore.productcatalog;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

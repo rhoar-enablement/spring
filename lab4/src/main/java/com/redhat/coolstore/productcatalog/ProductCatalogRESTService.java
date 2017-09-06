@@ -1,13 +1,13 @@
-package com.redhat.coolstore;
+package com.redhat.coolstore.productcatalog;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ public class ProductCatalogRESTService {
 	@Value("${catalog.default.products}")
 	String defaultProducts;
 	
-	@Autowired
+	@Inject
 	ProductRepository catalog;
 
 	@GET

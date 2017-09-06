@@ -1,4 +1,4 @@
-package com.redhat.coolstore;
+package com.redhat.coolstore.productcatalog;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

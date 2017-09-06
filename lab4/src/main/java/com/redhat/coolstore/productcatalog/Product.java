@@ -1,4 +1,4 @@
-package com.redhat.coolstore;
+package com.redhat.coolstore.productcatalog;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
