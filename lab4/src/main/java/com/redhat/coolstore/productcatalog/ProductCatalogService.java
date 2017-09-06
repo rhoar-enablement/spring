@@ -13,10 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Path("/products")
-public class ProductCatalogRESTService {
-	
-	@Value("${catalog.default.products}")
-	String defaultProducts;
+public class ProductCatalogService {
 	
 	@Inject
 	ProductRepository catalog;
@@ -28,12 +25,6 @@ public class ProductCatalogRESTService {
 			return Response.serverError().entity("Did not found any products").build();
 		}
 		return Response.ok(products,MediaType.APPLICATION_JSON).build();
-	}
-	
-	@GET
-	@Path("/defaultlist")
-	public Response defaultList() {
-		return Response.ok(defaultProducts.split(","),MediaType.APPLICATION_JSON).build();
 	}
 	
 }
