@@ -75,8 +75,105 @@ In the `<build><plugins><plugin>` section add
 +
     mvn clean verify
 
-== Adding support for postgresql
-When we depoy this OpenShift we probably want to use a database instance and not a local H2 instance. To do this we need to introduce different profile for OpenShift vs local
+== Adding Red Hat supported tomcat dependency
+In order to tell spring to use the version of that Red Hat support we exclicitrly have to add dependency to `tomcat-juli` before the `spring-boot-starter-tomcat`.
+
+1. Add the following dependency after the `<!-- Add Apache Tomcat dependency -\->` in the pom.xml
++
+[source, xml]
+----
+<dependency>
+    <groupId>org.apache.tomcat</groupId>
+    <artifactId>tomcat-juli</artifactId>
+</dependency>
+----
+
+== Adding health check etc via spring-actuator
+For applications running on OpenShift is recommended to use health checks to detect if a pod is not responding and when it is responding. The Fabric8 plugin will automatically help set that up as long as we are using the Spring Actuator.
+
+1. Add the following dependency after the `<!-- Add Spring Actuator -\->` in the pom.xml
++
+[source, xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-actuator</artifactId>
+</dependency>
+----
+
+CAUTION: The order of the dependency in maven does matter and in this particular case it's very sensitive. If you have problems building the project later then look at the order of dependencies in the solution.
+
+== Add a deployment.yml file
+Fabric8 plugin can help developers with OpenShift specfic configuration. A lot of the boilerplate configuration is automatically handled, but in our case we want to connect to a Postgres Database using special credentials and we also want to activate a spring configuration profile called openshift.
+
+1. If it doesn't already exist create a directory called `src/main/fabric8`
+
+2. Add a file called `deployment.yml` with the following content
++
+[source, yaml]
+----
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: ${project.artifactId}
+spec:
+  template:
+    spec:
+      containers:
+        - env:
+            - name: DB_USERNAME
+              valueFrom:
+                 secretKeyRef:
+                   name: my-database-secret
+                   key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                 secretKeyRef:
+                   name: my-database-secret
+                   key: password
+            - name: JAVA_OPTIONS
+              value: "-Dspring.profiles.active=openshift"
+----
+
+== Add a the secrets for the database authentication
+
+1. If it doesn't already exist create a directory called `src/main/fabric8`
+
+1. Add a file called `credentials-secret.yml` with the following content
++
+[source, yaml]
+----
+apiVersion: "v1"
+kind: "Secret"
+metadata:
+  name: "my-database-secret"
+stringData:
+  user: "luke"
+  password: "secret"
+----
+
+== Add a route definition
+
+1. If it doesn't already exist create a directory called `src/main/fabric8`
+
+1. Add a file called `route.yml` with the following content
++
+[source, yaml]
+----
+apiVersion: v1
+kind: Route
+metadata:
+  name: ${project.artifactId}
+spec:
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: ${project.artifactId}
+----
+
+== Adding dependency to postgresql database
+When we deploy this OpenShift we probably want to use a database instance and not a local H2 instance. To do this we need to introduce different profile for OpenShift vs local
 
 1. Remove the h2 dependency
 
