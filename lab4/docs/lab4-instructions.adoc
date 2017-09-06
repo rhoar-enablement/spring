@@ -247,7 +247,7 @@ When we deploy this OpenShift we probably want to use a database instance and no
 ----
 
 1. Change the default build to use the local profile
-
++
 [source,xml]
 ----
 <build>
@@ -271,6 +271,20 @@ When we deploy this OpenShift we probably want to use a database instance and no
 +
     mvn clean verify
 
+== Add openshift specific configuration
+The final step before we deploy the application is to add openshift specific configuration.
+
+1. Create a file called `src/main/resources/application-openshift.properties` that contains the following:
++
+[source,properties]
+----
+# PostgresDB Settings
+spring.datasource.url=jdbc:postgresql://${MY_DATABASE_SERVICE_HOST}:${MY_DATABASE_SERVICE_PORT}/my_data
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=create
+----
 
 == Deploy to OpenShift
 
