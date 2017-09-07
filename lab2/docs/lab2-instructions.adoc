@@ -9,20 +9,15 @@ In this lab, you will learn how to use Spring Data together with JPA to retrive 
 
 :numbered:
 
-== Reset the environment
-It's recommended, but not required to reset the development environment. To reset the environment run the following commands
+== Lab 2 start state
+Even though it is possible to continue working in the same project It's recommended to switch to lab2 directory
 
 [source, bash]
 ----
-curl -Lo ~/Downloads/rhoar-spring-master.zip https://github.com/rhoar-enablement/spring/archive/master.zip
-cd $HOME/rhoar-training/
-unzip ~/Downloads/rhoar-spring-master.zip
-cd spring
-mv product-catalog lab1
-cp -R ../spring-master/lab2 product-catalog
+cd ../lab2
 ----
 
-Reload the IDE to reflect the changes
+Reload import the project to your IDE
 
 == Bootstrap JPA and H2 database for testing
 
