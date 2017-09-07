@@ -17,24 +17,24 @@ In order to add support for tomcat in our application all we have todo is to add
 ----
 <dependency>
 	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-web</artifactId> <1>
+	<artifactId>spring-boot-starter-web</artifactId> <!-- 1 bootstrapping Tomcat -->
 </dependency>
 
 <dependency>
 	<groupId>org.apache.tomcat.embed</groupId>
-	<artifactId>tomcat-embed-jasper</artifactId>  <2>
-	<scope>provided</scope> <4>
+	<artifactId>tomcat-embed-jasper</artifactId>  <!-- 2 to compile JSP's -->
+	<scope>provided</scope> <!-- 4 - only required during the packaging and not for runtime -->
 </dependency>
 
 <dependency>
 	<groupId>javax.servlet</groupId>
-	<artifactId>jstl</artifactId> <3>
-	<scope>provided</scope> <4>
+	<artifactId>jstl</artifactId> <!-- 3 to enable JSP Standard Tag Library (JSTL) -->
+	<scope>provided</scope> <!-- 4 - only required during the packaging and not for runtime -->
 </dependency>
 ----
 <1> Spring-boot-start-web bootstraps the servlet environment, which defaults uses Tomcat
 <2> Since we are going to use Java Server Pages so we need to add a dependency to jasper so that we can compile JSP's
-<3> We are also going to use JSP Standard Tag Library (JSTL) so we need add a depenedencies for that.
+<3> We are also going to use JSP Standard Tag Library (JSTL) so we need add a dependencies for that.
 <4> Both jasper and JSTL is only required during the packaging and not for runtime.
 
 == Configure Tomcat to to use JSP views
@@ -119,7 +119,7 @@ NOTE: Placing the JSP pages under WEB-INF directory is a trick to not allow dire
 							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 						</td>
 						<td>0001</td>
-						<td>Mock Proudct</td>
+						<td>Mock Product</td>
 						<td>$10.0</td>
 						<td>Description of mock product</td>
 					</tr>
@@ -296,7 +296,7 @@ public String showProductForm(Model model) {
 }
 ----
 
-1. add a method called `showProductForm` like this:
+1. add an additional method called `showProductForm` with different arguments like this:
 +
 [source,java]
 ----
