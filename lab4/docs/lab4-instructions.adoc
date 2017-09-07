@@ -7,7 +7,7 @@
 
 In this lab, you will learn how to take a spring application and enable it to run on RHOAR.
 
-Spring Boot project from http://spring.start.io uses a parent project called `spring-boot-starter-parent`. This is where all the maven magic regarding versions etc are happinng. Similary you will find that project from http://launch.openshift.io has a parent project. However the later also has a dependencyManagement in the actual project.
+Spring Boot project from http://spring.start.io uses a parent project called `spring-boot-starter-parent`. This is where all the maven magic regarding versions etc are happening. Similary you will find that project from http://launch.openshift.io has a parent project. However the later also has a dependencyManagement in the actual project.
 
 In this lab we will walk you through how to take a customers Spring Boot project and convert it into RHOAR.
 
@@ -301,3 +301,24 @@ spring.jpa.hibernate.ddl-auto=create
 1. Build and deploy your project
 +
     mvn clean fabric8:deploy -Popenshift
+
+1. Add a final name to the pom.xml
++
+[source,xml]
+----    
+<build>
+		<finalName>${project.artifactId}</finalName> 
+        .....
+</build>
+----  
+
+1. Add an index.html in the META-INF/resources folder or manually add the context path to your openshift route "/admin/productlist"
++
+[source,xml]
+----    
+<html>
+    <head>
+        <meta http-equiv="refresh" content="0; url=/admin/productlist" />
+    </head>
+</html>
+----  
