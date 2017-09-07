@@ -220,7 +220,7 @@ mvn verify
 Lets update the test class to use a profile called `dev` that should result in `Hey Developer!` as message
 
 
-1. Add annotation to `@ActiveProfiles("dev")` to the class `ProductCatalogApplicationTests`
+1. Add annotation to `@ActiveProfiles("dev")` to the class `ProductCatalogApplicationTests` and the following import statement `import org.springframework.test.context.ActiveProfiles`
 
 1. Change the `assertEquals` test string to `Hey Developer!`
 
