@@ -13,6 +13,69 @@ In the past Spring has gotten a lot of criticism for beeing hard to get started 
 
 Since this lab aims to teach you have to work with existing Spring application and run it on RHOAR we are going to use the Spring Initalizer. Alternatively we could have used launch.openshift.io or JBoss Forge to initiate the project, however that would have shortcutted some of the steps that are important for your understanding of how to run Spring on RHOAR.
 
+== Contribute
+If you find an issue or just a spelling misstake please log a issue at http://github.com/rhoar-enablement/spring, or even better issue a pull request.
+
+= Environment setup
+
+To get started, use `git` to copy the necessary lab files to your local environment:
+
+    $ cd $HOME
+    $ mkdir rhoar-enablement
+    $ git clone https://github.com/rhoar-enablement/spring
+
+This will create a copy of the lab materials in the `spring` subdirectory.
+
+    $ cd $HOME/spring
+    $ ls
+    lab1 lab2 lab3 lab4 ...
+
+Each lab is self-contained within each of the subdirectories.
+
+NOTE: You can choose any directory to house your lab code, these instructions use `$HOME/rhoar-enablement` as an example.
+
+== Problem solving
+If you get stuck during the labs feel free to reach out to your training you can also follow these instructions to find the issue your self.
+
+At the beginning of each lab you will start with working source code, and make modifications yourself to demonstrate
+features of the software, ending with working source code that you modified.
+
+If you get stuck and can't figure out why something isn't working or compiling or you are getting strange errors,
+you can always compare your project and the contents of the files you are modifying with a pre-created solution
+in the `solution` branch of the git repository.
+
+NOTE: You can also just browse the solution in your browser at `https://github.com/rhoar-enablement/spring/tree/solution`
+
+For example, suppose you are on Lab 3 and editing the `pom.xml` file and your build fails. You show the differences
+between the "official" solution and YOUR code using:
+
+[source, bash]
+% cd $HOME/spring/lab3
+% git diff solution:lab3/pom.xml ./pom.xml
+
+To compare the entire source tree between your code and the Lab 3 code:
+
+[source, bash]
+% cd $HOME/spring/lab3
+% git diff solution:lab3/src ./src
+
+This uses the `git` command line to perform file comparisons using the named branch `solution` and your working
+directory of changes. Use the output from `git diff` to see if you've forgotten a step or mis-typed something.
+
+You can also get the entire solution and use that in case you simply want to fast-forward to the end of the lab.
+For example, suppose you are stuck on Lab 3 and time is running out, but you want to see the final solution before moving
+to lab 4. In this case you can follow these steps:
+
+. If you want to save the changes you've made, run `git stash save`. This will save your changes and then reset your working
+directory back to the beginning of the mab.
+. Next, run `git checkout solution` to switch to the solution branch. Files in your working directory should now be the solution's files.
+. Proceed with the lab (e.g. do a build, run a command, whatever is required in the lab after changing source code)
+. When you're done, don't forget to go back to the `master` branch so you can start the next lab at the beginning!
+[source, bash]
+% git reset --hard
+% git checkout master
+% git stash apply # optional, only needed if you saved your changes earlier
+
 = Steps
 
 :numbered:
@@ -22,7 +85,7 @@ Since this lab aims to teach you have to work with existing Spring application a
 1. Open a browser to http://start.spring.io and enter the following information
 
 +
-Generate a **Maven project** with **Java** and Spring Boot **1.5.4**
+Generate a **Maven project** with **Java** and Spring Boot **1.5.x**
 +
 [options="header,footer,autowidth"]
 |=======
@@ -33,6 +96,8 @@ Generate a **Maven project** with **Java** and Spring Boot **1.5.4**
 |=======
 +
 image::images/spring-initilizer.png[Spring initilizer]
++
+NOTE: The version of Spring is probably different from the picture above. Make sure you use a 1.5.x version.
 
 1. Click Generate project
 1. Open a terminal and unzip the downloaded project
@@ -62,17 +127,17 @@ mvn clean package
 +
 [source,java]
 ---- 
-    public String sayHello() {
-        return "Hello World!";
-    }
+public String sayHello() {
+    return "Hello World!";
+}
 ----
 
 1. Inject the component into the `ProductCatalogApplicationTests`
 +
 [source,java]
 ---- 
-    @Autowired
-    ProductCatalogService service
+@Autowired
+ProductCatalogService service
 ----
 +
 Note: Autowire annotation requires that you add `import org.springframework.beans.factory.annotation.Autowired;`
@@ -81,12 +146,12 @@ Note: Autowire annotation requires that you add `import org.springframework.bean
 +
 [source,java]
 ---- 
-	@Test
-    public void testDefaultProductList() {
-        String message = service.sayHello();
-        assertTrue(message!=null);
-        assertEquals(message,"Hello World!");
-    }
+@Test
+public void testDefaultProductList() {
+    String message = service.sayHello();
+    assertTrue(message!=null);
+    assertEquals(message,"Hello World!");
+}
 ----
 +
 NOTE: This requires that you add the following import statements `import static org.junit.Assert.assertEquals;` and `import static org.junit.Assert.assertTrue;`
@@ -104,11 +169,11 @@ You can now inject a component with @Autowired annotation, similary to how CDI w
 +
 [source,xml]
 ----
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
-        </dependency>
+<dependency>
+    <groupId>javax.inject</groupId>
+    <artifactId>javax.inject</artifactId>
+    <version>1</version>
+</dependency>
 ----
 
 1. Change `ProductCatalogApplicationTest` and replace the `@Autowired` with `@Inject` and `import org.springframework.beans.factory.annotation.Autowired;` with `import javax.inject.Inject;`
@@ -126,8 +191,8 @@ mvn verify
 +
 [source,java]
 ---- 
-    @Value("${coolstore.message:Hello World!}")
-    String message;
+@Value("${coolstore.message:Hello World!}")
+String message;
 ----
 +
 NOTE: The `@Value` annotations namespace is `org.springframework.beans.factory.annotation.Value`
@@ -136,9 +201,9 @@ NOTE: The `@Value` annotations namespace is `org.springframework.beans.factory.a
 +
 [source,java]
 ---- 
-    public String sayHello() {
-        return message;
-    }
+public String sayHello() {
+    return message;
+}
 ----
 +
 
@@ -149,8 +214,15 @@ NOTE: The `@Value` annotations namespace is `org.springframework.beans.factory.a
 mvn verify
 ----
 
-=== Add dev specific message
+=== Add specific message for profile `dev` and update your test to use it
 Lets update the test class to use a profile called `dev` that should result in `Hey Developer!` as message
+
+1. Add a new properties file called `src/main/resources/application-dev.properties` with the following content
+
+[source,properties]
+----
+coolstore.message=Hey Developer!
+----
 
 1. Add annotation to `@ActiveProfiles("dev")` to the class `ProductCatalogApplicationTests`
 
@@ -165,13 +237,6 @@ mvn verify
 +
 NOTE: This test should fail since we haven't updated the implementation yet.
 
-1. Add a new properties file called `src/main/resources/application-dev.properties` with the following content
-
-[source,properties]
-----
-coolstore.message=Hey Developer!
-----
-
 1. Run the test 
 +
 [source,bash]
@@ -182,20 +247,21 @@ mvn verify
 NOTE: This time the test should execute successful
 
 == Add REST capabilities using Apache CXF
+At this stage our product catalog service can only say hello and it does not expose any external endpoints. In this section we will add REST support and provide a list of product names. Currently Apache CXF is tested and verified with version 1.4.1 of Spring Boot, so we need to revert to that one. 
 
-At this stage our product catalog service can only say hello and it does not expose any external endpoints. In this section we will add REST support and provide a list of product names.
+NOTE: Because of a bug in Spring 1.5 Apache CXF doesn't work properly. When RHOAR releaes we will probably test and verify towards a more recent version of Spring Boot. 
 
-1. Apache CXF is tested and verfied with version 1.4.1 of Spring Boot, change the `spring-boot-starter-paren` version in the `pom.xml` to `1.4.1.RELEASE`.
+1. Apache CXF is tested and verfied with version 1.4.1 of Spring Boot, change the `spring-boot-starter-parent` version in the `pom.xml` to `1.4.1.RELEASE`.
 
 1. Also in `pom.xml` add dependencies to Apache CXF as below:
 +
 [source,xml]
 ----
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
-			<version>3.1.10</version>
-		</dependency>
+<dependency>
+    <groupId>org.apache.cxf</groupId>
+    <artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
+    <version>3.1.10</version>
+</dependency>
 ----
 
 1. Open `ProductCatalogService` and add `@Path("/products")` as class annotation and add the following method
@@ -268,10 +334,10 @@ Default Apache CXF relies on Jettison 1.3 as JSON provider, but one can also use
 +
 [source,xml]
 ----
-		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-json-provider</artifactId>
-		</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+    <artifactId>jackson-jaxrs-json-provider</artifactId>
+</dependency>
 ----
 
 1. Create a configuration class called `ProductCatalogConfiguration` to configure the Jackson using a bean like this:
