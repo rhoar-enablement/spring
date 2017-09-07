@@ -22,6 +22,7 @@ To get started, use `git` to copy the necessary lab files to your local environm
 
     $ cd $HOME
     $ mkdir rhoar-enablement
+    $ cd rhoar-enablement
     $ git clone https://github.com/rhoar-enablement/spring
 
 This will create a copy of the lab materials in the `spring` subdirectory.
@@ -106,14 +107,15 @@ NOTE: The version of Spring is probably different from the picture above. Make s
 ----
 mkdir -p ~/rhoar-training/spring
 cd ~/rhoar-training/spring
-unzip ~/Downloads/product-catalog.zip 
+unzip ~/Downloads/product-catalog.zip
+cp -R product-catalog/* lab1/ 
 ----
 
 1. Test to build the project  
 +
 [source,bash]
 ----
-cd product-catalog
+cd lab1
 mvn clean package
 ----
 
