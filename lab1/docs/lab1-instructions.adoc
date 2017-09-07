@@ -27,7 +27,7 @@ To get started, use `git` to copy the necessary lab files to your local environm
 
 This will create a copy of the lab materials in the `spring` subdirectory.
 
-    $ cd $HOME/spring
+    $ cd $HOME/rhoar-enablement/spring
     $ ls
     lab1 lab2 lab3 lab4 ...
 
@@ -51,13 +51,13 @@ For example, suppose you are on Lab 3 and editing the `pom.xml` file and your bu
 between the "official" solution and YOUR code using:
 
 [source, bash]
-% cd $HOME/spring/lab3
+% cd $HOME/rhoar-enablement/spring/lab3
 % git diff solution:lab3/pom.xml ./pom.xml
 
 To compare the entire source tree between your code and the Lab 3 code:
 
 [source, bash]
-% cd $HOME/spring/lab3
+% cd $HOME/rhoar-enablement/spring/lab3
 % git diff solution:lab3/src ./src
 
 This uses the `git` command line to perform file comparisons using the named branch `solution` and your working
@@ -105,8 +105,8 @@ NOTE: The version of Spring is probably different from the picture above. Make s
 +
 [source,bash]
 ----
-mkdir -p ~/rhoar-training/spring
-cd ~/rhoar-training/spring
+mkdir -p ~/rhoar-enablement/spring
+cd ~/rhoar-enablement/spring
 unzip ~/Downloads/product-catalog.zip
 cp -R product-catalog/* lab1/ 
 ----
@@ -139,7 +139,7 @@ public String sayHello() {
 [source,java]
 ---- 
 @Autowired
-ProductCatalogService service
+ProductCatalogService service;
 ----
 +
 Note: Autowire annotation requires that you add `import org.springframework.beans.factory.annotation.Autowired;`
@@ -151,8 +151,8 @@ Note: Autowire annotation requires that you add `import org.springframework.bean
 @Test
 public void testDefaultProductList() {
     String message = service.sayHello();
-    assertTrue(message!=null);
-    assertEquals(message,"Hello World!");
+    assertNotNull(message);
+    assertEquals(message, "Hello World!");
 }
 ----
 +
@@ -272,9 +272,9 @@ NOTE: Because of a bug in Spring 1.5 Apache CXF doesn't work properly. When RHOA
 [source,java]
 ----
     @GET
-	public Response list() {
-		return Response.ok(message,MediaType.APPLICATION_JSON).build();
-	}
+    public Response list() {
+        return Response.ok(message,MediaType.APPLICATION_JSON).build();
+    }
 ----
 +
 NOTE: The `@Path` annotations namespace is `javax.ws.rs.Path`
