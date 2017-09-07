@@ -219,12 +219,6 @@ mvn verify
 === Add specific message for profile `dev` and update your test to use it
 Lets update the test class to use a profile called `dev` that should result in `Hey Developer!` as message
 
-1. Add a new properties file called `src/main/resources/application-dev.properties` with the following content
-
-[source,properties]
-----
-coolstore.message=Hey Developer!
-----
 
 1. Add annotation to `@ActiveProfiles("dev")` to the class `ProductCatalogApplicationTests`
 
@@ -238,6 +232,13 @@ mvn verify
 ----
 +
 NOTE: This test should fail since we haven't updated the implementation yet.
+
+1. Add a new properties file called `src/main/resources/application-dev.properties` with the following content
+
+[source,properties]
+----
+coolstore.message=Hey Developer!
+----
 
 1. Run the test 
 +
