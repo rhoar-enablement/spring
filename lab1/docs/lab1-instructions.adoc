@@ -331,7 +331,7 @@ NOTE: The expected output should be `Hey Developer!`
 1. Go back to the original terminal and stop the application using `CTRL-C`
 
 === Add support Jackson JAX-RS binding
-Default Apache CXF relies on Jettison 1.3 as JSON provider, but one can also use Jackson provide. Which one to choose is a mater of taste, but Jettison supports only JAXB annotated beans. Since we want to avoid additional annotation or transformation object we are going to use Jackson Provider instead.
+Default Apache CXF relies on Jettison 1.3 as JSON provider, but one can also use Jackson. Which one to choose is a matter of taste, but Jettison supports only JAXB annotated beans. Since we want to avoid additional annotations or transformation objects we are going to use Jackson instead.
 
 1. Add Jackson dependency to the `pom.xml`
 +
@@ -386,7 +386,7 @@ curl http://localhost:8080/services/products
 NOTE: The expected output should be `Hello World!`
 
 = Summary
-In this lab you have learned how to create component and how to configure that component for different environments using the configuration api. Then you learned hot to expose the component as a REST service that can be called using standad http protocol. Finally you learned how to add Jackson Json  provider that we are going to be useful in future next labs.
+In this lab you have learned how to create component and how to configure that component for different environments using the configuration api. Then you learned how to expose the component as a REST service that can be called using the standard http protocol. Finally you learned how to add the Jackson Json provider that we are going to use in the following labs.
 
 
 
