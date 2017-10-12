@@ -152,7 +152,7 @@ Note: Autowire annotation requires that you add `import org.springframework.bean
 public void testDefaultProductList() {
     String message = service.sayHello();
     assertNotNull(message);
-    assertEquals(message, "Hello World!");
+    assertEquals("Hello World!", message);
 }
 ----
 +
