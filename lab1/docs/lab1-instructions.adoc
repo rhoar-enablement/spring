@@ -9,12 +9,12 @@ In this lab, you will learn the basics of Spring development and how to get star
 
 == Background
 
-In the past Spring has gotten a lot of criticism for beeing hard to get started with. This has however been addressed by the Spring community with the Spring Boot project and the Spring Initalizer service hosted at http://start.spring.io. However booth Spring Boot and Spring Initalizer takes an opinonated approach to which frameworks and 3rd party library to use. In a similar manner Red Hat provides a service at launch.opeenshift.io that will take an opinionated approach at which frameworks and target platfrom (OpenShift) you are developing for. 
+In the past Spring has gotten a lot of criticism for being hard to get started with. This has however been addressed by the Spring community with the Spring Boot project and the Spring Initializr service hosted at http://start.spring.io. However, both Spring Boot and Spring Initializr takes an opinionated approach to which frameworks and 3rd party library to use. In a similar manner, Red Hat provides a service at launch.opeenshift.io that will take an opinionated approach at which frameworks and target platform (OpenShift) you are developing for. 
 
-Since this lab aims to teach you have to work with existing Spring application and run it on RHOAR we are going to use the Spring Initalizer. Alternatively we could have used launch.openshift.io or JBoss Forge to initiate the project, however that would have shortcutted some of the steps that are important for your understanding of how to run Spring on RHOAR.
+Since this lab aims to teach you how to work with existing Spring application and run it on RHOAR we are going to use the Spring Initializr. Alternatively we could have used launch.openshift.io or JBoss Forge to initiate the project, however that would have shortcutted some of the steps that are important for your understanding of how to run Spring on RHOAR.
 
 == Contribute
-If you find an issue or just a spelling misstake please log a issue at http://github.com/rhoar-enablement/spring, or even better issue a pull request.
+If you find an issue or just a spelling mistake please log an issue at http://github.com/rhoar-enablement/spring, or even better issue a pull request.
 
 = Environment setup
 
@@ -38,7 +38,7 @@ NOTE: You can choose any directory to house your lab code, these instructions us
 == Problem solving
 If you get stuck during the labs feel free to reach out to your training you can also follow these instructions to find the issue your self.
 
-At the beginning of each lab you will start with working source code, and make modifications yourself to demonstrate
+At the beginning of each lab, you will start with working source code, and make modifications yourself to demonstrate
 features of the software, ending with working source code that you modified.
 
 If you get stuck and can't figure out why something isn't working or compiling or you are getting strange errors,
@@ -61,11 +61,11 @@ To compare the entire source tree between your code and the Lab 3 code:
 % git diff solution:lab3/src ./src
 
 This uses the `git` command line to perform file comparisons using the named branch `solution` and your working
-directory of changes. Use the output from `git diff` to see if you've forgotten a step or mis-typed something.
+directory of changes. Use the output from `git diff` to see if you've forgotten a step or mistyped something.
 
 You can also get the entire solution and use that in case you simply want to fast-forward to the end of the lab.
 For example, suppose you are stuck on Lab 3 and time is running out, but you want to see the final solution before moving
-to lab 4. In this case you can follow these steps:
+to lab 4. In this case, you can follow these steps:
 
 . If you want to save the changes you've made, run `git stash save`. This will save your changes and then reset your working
 directory back to the beginning of the mab.
@@ -81,7 +81,7 @@ directory back to the beginning of the mab.
 
 :numbered:
 
-== Initiate the project using Spring Initalizer
+== Initiate the project using Spring Initializr
 
 1. Open a browser to http://start.spring.io and enter the following information
 
@@ -165,7 +165,7 @@ NOTE: This requires that you add the following import statements `import static 
 mvn verify
 ----
 
-You can now inject a component with @Autowired annotation, similary to how CDI works in Java EE. If you are a Java EE developer you would probably prefer to use the JSR-330 standard annotation `@Inject` instead of `@Autowired` which is also supported by Spring. Let's change the test class to use @Inject instead.
+You can now inject a component with @Autowired annotation, similar to how CDI works in Java EE. If you are a Java EE developer you would probably prefer to use the JSR-330 standard annotation `@Inject` instead of `@Autowired` which is also supported by Spring. Let's change the test class to use @Inject instead.
 
 1. Add the following dependency to the `pom.xml` in the `<dependencies>` section.
 +
@@ -217,7 +217,7 @@ mvn verify
 ----
 
 === Add specific message for profile `dev` and update your test to use it
-Lets update the test class to use a profile called `dev` that should result in `Hey Developer!` as message
+Let's pdate the test class to use a profile called `dev` that should result in `Hey Developer!` as message
 
 
 1. Add annotation to `@ActiveProfiles("dev")` to the class `ProductCatalogApplicationTests` and the following import statement `import org.springframework.test.context.ActiveProfiles`
@@ -250,11 +250,11 @@ mvn verify
 NOTE: This time the test should execute successful
 
 == Add REST capabilities using Apache CXF
-At this stage our product catalog service can only say hello and it does not expose any external endpoints. In this section we will add REST support and provide a list of product names. Currently Apache CXF is tested and verified with version 1.4.1 of Spring Boot, so we need to revert to that one. 
+At this stage, our product catalog service can only say hello and it does not expose any external endpoints. In this section, we will add REST support and provide a list of product names. Currently, Apache CXF is tested and verified with version 1.4.1 of Spring Boot, so we need to revert to that one. 
 
-NOTE: Because of a bug in Spring 1.5 Apache CXF doesn't work properly. When RHOAR releaes we will probably test and verify towards a more recent version of Spring Boot. 
+NOTE: Because of a bug in Spring 1.5 Apache CXF doesn't work properly. When RHOAR release we will probably test and verify towards a more recent version of Spring Boot. 
 
-1. Apache CXF is tested and verfied with version 1.4.1 of Spring Boot, change the `spring-boot-starter-parent` version in the `pom.xml` to `1.4.1.RELEASE`.
+1. Apache CXF is tested and verified with version 1.4.1 of Spring Boot, change the `spring-boot-starter-parent` version in the `pom.xml` to `1.4.1.RELEASE`.
 
 1. Also in `pom.xml` add dependencies to Apache CXF as below:
 +
